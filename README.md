@@ -19,84 +19,89 @@ You can include this library in your project by copying the source code directly
 
 ### 1. Creating an Inventory
 
-```javascript
+\`\`\`javascript
 import Inventory from './Inventory';
 
-const myInventory = Inventory.create(["gold", "stone", "energy"], 9);
-```
+const myInventory = new Inventory(["gold", "stone", "energy"], 9);
+\`\`\`
 
-This creates an inventory with 3 types of items (`gold`, `stone`, and `energy`), and a maximum capacity of 9 packs.
+This creates an inventory with 3 types of items (\`gold\`, \`stone\`, and \`energy\`), and a maximum capacity of 9 packs.
 
 ### 2. Adding Items
 
-```javascript
-const success = Inventory.addItem(myInventory, "stone", 10);
-console.log(success); // Outputs null if all items are added, or the leftover pack if not
-```
+\`\`\`javascript
+const result = myInventory.addItem("stone", 10);
+console.log(result); // Outputs null if all items are added, or the leftover pack if not
+\`\`\`
 
-This adds 10 units of `stone` to the inventory. If there's leftover after filling all available packs, it will return a pack with the remaining quantity.
+This adds 10 units of \`stone\` to the inventory. If there's leftover after filling all available packs, it will return a pack with the remaining quantity.
 
 ### 3. Removing Items
 
-```javascript
-const removed = Inventory.remItem(myInventory, "stone", 3);
+\`\`\`javascript
+const removed = myInventory.remItem("stone", 3);
 console.log(removed); // Outputs true if items are successfully removed, false otherwise
-```
+\`\`\`
 
-This removes 3 units of `stone` from the inventory, respecting the pack constraints.
+This removes 3 units of \`stone\` from the inventory, respecting the pack constraints.
 
 ### 4. Checking Item Availability
 
-```javascript
-const hasEnoughStone = Inventory.hasItem(myInventory, "stone", 5);
+\`\`\`javascript
+const hasEnoughStone = myInventory.hasItem("stone", 5);
 console.log(hasEnoughStone); // Outputs true if at least 5 units of stone are available
-```
+\`\`\`
 
-This checks if there are at least 5 units of `stone` in the inventory.
+This checks if there are at least 5 units of \`stone\` in the inventory.
 
 ### 5. Getting Item Count
 
-```javascript
-const totalGold = Inventory.get(myInventory, "gold");
+\`\`\`javascript
+const totalGold = myInventory.get("gold");
 console.log(totalGold); // Outputs the total number of gold units in the inventory
-```
+\`\`\`
 
-This retrieves the total number of `gold` units present in the inventory.
+This retrieves the total number of \`gold\` units present in the inventory.
 
 ## API Reference
 
-### `Inventory.create(types, max, isConst = false)`
+### \`new Inventory(types, max, isConst = false)\`
 
-- `types`: An array of item types to initialize in the inventory.
-- `max`: The maximum number of packs the inventory can hold.
-- `isConst`: A boolean indicating if the packs should be constant (default: `false`).
+- \`types\`: An array of item types to initialize in the inventory.
+- \`max\`: The maximum number of packs the inventory can hold.
+- \`isConst\`: A boolean indicating if the packs should be constant (default: \`false\`).
 
-### `Inventory.addItem(inv, type, n)`
+### \`inventory.addItem(type, n)\`
 
-- `inv`: The inventory object.
-- `type`: The type of item to add.
-- `n`: The number of items to add.
-- **Returns**: `null` if all items are added, or a pack with the remaining quantity if there are leftovers.
+- \`type\`: The type of item to add.
+- \`n\`: The number of items to add.
+- **Returns**: \`null\` if all items are added, or a pack with the remaining quantity if there are leftovers.
 
-### `Inventory.remItem(inv, type, n)`
+### \`inventory.remItem(type, n)\`
 
-- `inv`: The inventory object.
-- `type`: The type of item to remove.
-- `n`: The number of items to remove.
-- **Returns**: `true` if the items were successfully removed, `false` otherwise.
+- \`type\`: The type of item to remove.
+- \`n\`: The number of items to remove.
+- **Returns**: \`true\` if the items were successfully removed, \`false\` otherwise.
 
-### `Inventory.hasItem(inv, type, n)`
+### \`inventory.hasItem(type, n)\`
 
-- `inv`: The inventory object.
-- `type`: The type of item to check.
-- `n`: The number of items to check for availability.
-- **Returns**: `true` if the inventory has at least `n` units of the item, `false` otherwise.
+- \`type\`: The type of item to check.
+- \`n\`: The number of items to check for availability.
+- **Returns**: \`true\` if the inventory has at least \`n\` units of the item, \`false\` otherwise.
 
-### `Inventory.get(inv, type)`
+### \`inventory.get(type)\`
 
-- `inv`: The inventory object.
-- `type`: The type of item to count.
+- \`type\`: The type of item to count.
 - **Returns**: The total number of units of the specified item in the inventory.
+
+### \`inventory.toObject()\`
+
+- **Returns**: A simple object representation of the inventory, suitable for JSON serialization.
+
+### \`Inventory.fromObject(obj)\`
+
+- \`obj\`: A simple object representing an inventory.
+- **Returns**: A new \`Inventory\` instance created from the provided object.
 
 ## License
 

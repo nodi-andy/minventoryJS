@@ -1,4 +1,4 @@
-// item = integer
+// item = {type: string, n: integer}
 // pack = {type: string, n: integer, max: integer, isConst: false}
 // inventory = {packs: [pack, ...], max: packSize}
 
@@ -9,20 +9,19 @@
 // myInventory = Inventory.create(["gold", "stone", "energy"], 3, true);
 // Inventory.add(myInventory, "stone", 10) // true
 // Inventory.rem(myInventory, "stone", 3) // false
-
-export default class Inventory {
+class Inventory {
 
   static defPackSize = 10;
   static defInvSize = 10;
 
-  static create (types, max, isConst = false) {
-    const packs = types.map(type => ({
+  constructor(types, max, isConst = false) {
+    this.packs = types.map(type => ({
       type: type,
       n: 0,
       max: Inventory.defPackSize,
       isConst: isConst
     }));
-    return {packs, max: max || this.defInvSize};
+    this.max = max || Inventory.defInvSize;
   }
 
   // sort out all packs which has different types except the empty ones
@@ -30,23 +29,19 @@ export default class Inventory {
   // start filling the packs as ordered, if needed create new pack in the new empty pack slots
   // return null if done else return pack (with type and leftover number)
 
-  static addItem(inv, type, n) {
-    // Separate packs into different categories
-    const sameTypePacks = inv.packs.filter(pack => pack.type === type);
-    const emptyPacks = inv.packs.filter(pack => pack.type === null);
+  addItem(type, n) {
+    const sameTypePacks = this.packs.filter(pack => pack.type === type);
+    const emptyPacks = this.packs.filter(pack => pack.type === null);
 
-    // Combine sameTypePacks and emptyPacks (where new packs can be created)
     const usablePacks = [...sameTypePacks, ...emptyPacks];
 
     let leftover = n;
 
-    // Try to fill the usable packs
     for (let pack of usablePacks) {
       if (leftover <= 0) break;
       const availableSpace = pack.max - pack.n;
       if (availableSpace > 0) {
         if (pack.type === null) {
-          // Initialize the empty pack with the type
           pack.type = type;
         }
         const amountToAdd = Math.min(leftover, availableSpace);
@@ -55,13 +50,11 @@ export default class Inventory {
       }
     }
 
-    // If there's leftover, create a new pack if there's space
-    if (leftover > 0 && inv.packs.length < inv.max) {
-      inv.packs.push({ type: type, n: leftover, max: Inventory.defPackSize });
+    if (leftover > 0 && this.packs.length < this.max) {
+      this.packs.push({ type: type, n: leftover, max: Inventory.defPackSize });
       leftover = 0;
     }
 
-    // Return the remaining items if not all could be added
     if (leftover > 0) {
       return { type, n: leftover, max: Inventory.defPackSize };
     }
@@ -69,11 +62,10 @@ export default class Inventory {
     return null;
   }
   
-  // loop through packs and check if item (type,n) are available 
-  static hasItem(inv, type, n) {
+  hasItem(type, n) {
     let count = 0;
 
-    for (let pack of inv.packs) {
+    for (let pack of this.packs) {
       if (pack.type === type) {
         count += pack.n;
         if (count >= n) {
@@ -85,18 +77,14 @@ export default class Inventory {
     return false;
   }
 
-  // First check if items are available (hasItem) if yes, remove them from respective packs, if a pack is emtpy.
-  // If a pack has isConst = true, do not remove the pack just set number of items on 0. 
-  // If isConst false, remove the pack and set a null value.
-
-  static remItem(inv, type, n) {
-    if (!Inventory.hasItem(inv, type, n)) {
+  remItem(type, n) {
+    if (!this.hasItem(type, n)) {
       return false;
     }
   
     let remainingToRemove = n;
   
-    for (let pack of inv.packs) {
+    for (let pack of this.packs) {
       if (pack.type === type) {
         if (pack.n >= remainingToRemove) {
           pack.n -= remainingToRemove;
@@ -106,18 +94,14 @@ export default class Inventory {
           pack.n = 0;
         }
   
-        // If the pack is empty, handle it based on isConst
         if (pack.n === 0) {
           if (pack.isConst) {
-            // If isConst is true, just set n to 0 and keep the type
             pack.n = 0;
           } else {
-            // If isConst is false, mark the pack as empty (null type)
             pack.type = null;
           }
         }
   
-        // If all required items have been removed, stop
         if (remainingToRemove === 0) {
           break;
         }
@@ -127,15 +111,26 @@ export default class Inventory {
     return true;
   }
   
-
-  static get(inv, type) {
+  get(type) {
     let total = 0;
-    for (let pack of inv.packs) {
+    for (let pack of this.packs) {
       if (pack.type === type) {
         total += pack.n;
       }
     }
     return total;
   }
-  
+
+  toObject() {
+    return {
+      packs: this.packs.map(pack => ({ ...pack })),
+      max: this.max
+    };
+  }
+
+  static fromObject(obj) {
+    const inventory = new Inventory([], obj.max);
+    inventory.packs = obj.packs.map(pack => ({ ...pack }));
+    return inventory;
+  }
 }

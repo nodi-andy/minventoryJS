@@ -9,7 +9,7 @@
 // myInventory = Inventory.create(["gold", "stone", "energy"], 3, true);
 // Inventory.add(myInventory, "stone", 10) // true
 // Inventory.rem(myInventory, "stone", 3) // false
-class Inventory {
+export default class Inventory {
 
   static defPackSize = 10;
   static defInvSize = 10;

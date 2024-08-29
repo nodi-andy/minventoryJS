@@ -19,47 +19,47 @@ You can include this library in your project by copying the source code directly
 
 ### 1. Creating an Inventory
 
-\`\`\`javascript
+```javascript
 import Inventory from './Inventory';
 
 const myInventory = new Inventory(["gold", "stone", "energy"], 9);
-\`\`\`
+```
 
 This creates an inventory with 3 types of items (\`gold\`, \`stone\`, and \`energy\`), and a maximum capacity of 9 packs.
 
 ### 2. Adding Items
 
-\`\`\`javascript
+```javascript
 const result = myInventory.addItem("stone", 10);
 console.log(result); // Outputs null if all items are added, or the leftover pack if not
-\`\`\`
+```
 
 This adds 10 units of \`stone\` to the inventory. If there's leftover after filling all available packs, it will return a pack with the remaining quantity.
 
 ### 3. Removing Items
 
-\`\`\`javascript
+```javascript
 const removed = myInventory.remItem("stone", 3);
 console.log(removed); // Outputs true if items are successfully removed, false otherwise
-\`\`\`
+```
 
 This removes 3 units of \`stone\` from the inventory, respecting the pack constraints.
 
 ### 4. Checking Item Availability
 
-\`\`\`javascript
+```javascript
 const hasEnoughStone = myInventory.hasItem("stone", 5);
 console.log(hasEnoughStone); // Outputs true if at least 5 units of stone are available
-\`\`\`
+```
 
 This checks if there are at least 5 units of \`stone\` in the inventory.
 
 ### 5. Getting Item Count
 
-\`\`\`javascript
+```javascript
 const totalGold = myInventory.get("gold");
 console.log(totalGold); // Outputs the total number of gold units in the inventory
-\`\`\`
+```
 
 This retrieves the total number of \`gold\` units present in the inventory.
 
